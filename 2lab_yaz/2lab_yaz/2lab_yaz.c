@@ -54,11 +54,12 @@ int recurs(int slag, int digit)
 	for (i = 0; i < number_of_sum; i++)
 		for (j = 1; j <= digits_num[i][0]; j++) {
 			if (j == 1) digits_num[i][j] = 1; else digits_num[i][j] = flag;
-			srav(digits_num[i][j], i, j); if (j != 1 && flag == 0) flag = 2; else if (j != 1) flag++;
+			srav(digits_num[i][j], i, j); if (j!=1 && flag == 0) flag = 2; else if (j!=1) flag++;
 		}
 	for (j = 1; j <= digits_num[7][0]; j++) if (j == 1) digits_num[7][j] = 1; else digits_num[7][j] = 0;
+	flag = 0;
 try_harder:
-	printmat();
+	//printmat();
 	{
 		int as = sravnen();
 		if (as == 1) {
@@ -79,14 +80,14 @@ try_harder:
 
 int plus()
 {
-	int i = 7, i1 = number_of_sum, j = digits_num[i][0], k;
+	int i = 7, i1 = number_of_sum, j = digits_num[i][0], k, flag = 1;
 	try :
 		if (digits_num[i][j] != 9)
 		{
 			digits_num[i][j]++; srav(digits_num[i][j], i, j);
 		}
 		else {
-			if (j == 1) { digits_num[i][1] = 1; srav(digits_num[i][1], i, 1); if (i == 7) i = number_of_sum;  i--; j = digits_num[i][0]; goto try; }
+			if (j == 1) { if (i == (number_of_sum - 1) && (digits[0][0] != digits[7][0]) && (digits[1][0] != digits[7][0])) flag = if_kolvo(flag); else { digits_num[i][1] = 1; } srav(digits_num[i][1], i, 1); if (i == 7) i = number_of_sum;  i--; j = digits_num[i][0]; goto try; }
 			else if (j != 1) { digits_num[i][j] = 0; srav(digits_num[i][1], i, 1); j--; goto try; }
 			else {
 				digits_num[i][j] = 1; srav(digits_num[i][j], i, j);goto try;
@@ -95,20 +96,44 @@ int plus()
 
 }
 
+int already_used = 0;
+
+int if_kolvo(int flag)
+{
+	int i = 0; int j = 1;
+	if (number_of_sum == 2) if ((digits[0][0] != digits[7][0]) && (digits[1][0] != digits[7][0]))
+	{
+		if (already_used != 0) {
+			i = j; j = 0; already_used = 0;
+		}
+		if (flag != 6) 
+		{
+		digits_num[i][1] = 10 - flag;
+		digits_num[j][1] = flag;
+		flag++;
+		already_used++;
+	    }
+		else {
+			digits_num[i][1] = flag;
+			digits_num[j][1] = flag;
+			flag++;
+		}
+	}
+	return flag;
+}
 
 int printmat()
 {
-
 	for (int i1 = 0; i1 <= 7; i1++) {
 		for (int j = 1; j <= digits_num[i1][0]; j++)
 		{
 			if (digits_num[i1][0] != 0) printf("%i", digits_num[i1][j]);
 		}
-		if (i1 == 6) printf("="); else
-			if (i1 == 7) printf("\n"); else  if (digits_num[i1][0] != 0 && i1 != (number_of_sum - 1)) printf("+");
-	}
+	
+		if (i1 == 6) printf("="); else 
+		if (i1 == 7) printf("\n"); else  if (digits_num[i1][0] != 0 && i1!=(number_of_sum-1)) printf("+");
 }
-
+}
 
 int sum()
 {
@@ -153,7 +178,7 @@ int main()
 		for (j = 0; j <= digits[i][0]; j++)
 		{
 			if (j == 0) digits_num[i][j] = digits[i][j];
-			else digits_num[i][j] = 10;
+			else digits_num[i][j] = 0;
 		}
 	}
 
